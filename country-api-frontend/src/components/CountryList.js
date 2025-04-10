@@ -1,0 +1,23 @@
+import React from 'react';
+
+function CountryList({ countries }) {
+  return (
+    <div className="row">
+      {countries.map((country) => (
+        <div key={country.cca3} className="col-md-4 mb-3">
+          <div className="card">
+            <img src={country.flags.png} alt={`${country.name.common} flag`} className="card-img-top" />
+            <div className="card-body">
+              <h5 className="card-title">{country.name.common}</h5>
+              <p>Capital: {country.capital?.[0] || 'N/A'}</p>
+              <p>Population: {country.population.toLocaleString()}</p>
+              <p>Region: {country.region}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default CountryList;
