@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CountryList from './components/CountryList';
+import CountryDetails from './components/CountryDetails';
 import SearchBar from './components/SearchBar';
 import Filter from './components/Filter';
 
@@ -16,12 +18,17 @@ function App() {
   const handleFilter = (data) => setCountries(data);
 
   return (
-    <div className="container">
-      <h1>REST Countries Explorer</h1>
-      <SearchBar onSearch={handleSearch} />
-      <Filter onFilter={handleFilter} />
-      <CountryList countries={countries} />
-    </div>
+    <Router>
+      <div className="container">
+        <h1>REST Countries Explorer</h1>
+        <SearchBar onSearch={handleSearch} />
+        <Filter onFilter={handleFilter} />
+        <Routes>
+          <Route path="/" element={<CountryList countries={countries} />} />
+          <Route path="/country/:code" element={<CountryDetails />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

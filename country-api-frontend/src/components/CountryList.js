@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function CountryList({ countries }) {
   return (
@@ -12,6 +13,9 @@ function CountryList({ countries }) {
               <p>Capital: {country.capital?.[0] || 'N/A'}</p>
               <p>Population: {country.population.toLocaleString()}</p>
               <p>Region: {country.region}</p>
+              <Link to={`/country/${country.cca3}`} className="btn btn-primary">
+                View Details
+              </Link>
             </div>
           </div>
         </div>
