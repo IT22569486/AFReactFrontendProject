@@ -1,32 +1,23 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
-const API_BASE_URL = 'http://localhost:3000/api/auth';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data:', formData); // Log what’s being sent
-    axios.post(`${API_BASE_URL}/login`, formData)
-      .then(res => {
-        console.log('Response:', res.data); // Log the response
-        localStorage.setItem('token', res.data.token);
-        setMessage('Login successful!');
-        setTimeout(() => navigate('/'), 1000);
-      })
-      .catch(err => {
-        console.error('Error:', err.response ? err.response.data : err.message); // Log detailed error
-        setMessage(err.response?.data.message || 'Login failed');
-      });
+    try {
+      await login(formData.email, formData.password);
+      setMessage('Login successful!');
+    } catch (err) {
+      setMessage(err);
+    }
   };
 
   return (

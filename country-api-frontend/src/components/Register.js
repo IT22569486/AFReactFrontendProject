@@ -5,7 +5,14 @@ import { useNavigate } from 'react-router-dom';
 const API_BASE_URL = 'http://localhost:3000/api/auth';
 
 function Register() {
-  const [formData, setFormData] = useState({ username: '', email: '',phoneNumber:'', password: '' });
+  const [formData, setFormData] = useState({
+    username: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    password: '',
+  });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -13,14 +20,15 @@ function Register() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post(`${API_BASE_URL}/register`, formData)
-      .then(res => {
-        setMessage('Registration successful! Please log in.');
-        setTimeout(() => navigate('/login'), 2000);
-      })
-      .catch(err => setMessage(err.response?.data.message || 'Registration failed'));
+    try {
+      await axios.post(`${API_BASE_URL}/register`, formData);
+      setMessage('Registration successful! Redirecting to login...');
+      setTimeout(() => navigate('/login'), 1000);
+    } catch (err) {
+      setMessage(err.response?.data.message || 'Registration failed');
+    }
   };
 
   return (
@@ -36,6 +44,20 @@ function Register() {
           required
         />
         <input
+          type="text"
+          name="firstName"
+          placeholder="First Name"
+          value={formData.firstName}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="lastName"
+          placeholder="Last Name"
+          value={formData.lastName}
+          onChange={handleChange}
+        />
+        <input
           type="email"
           name="email"
           placeholder="Email"
@@ -43,13 +65,12 @@ function Register() {
           onChange={handleChange}
           required
         />
-         <input
-          type="phoneNumber"
+        <input
+          type="text"
           name="phoneNumber"
-          placeholder="PhoneNumber"
+          placeholder="Phone Number"
           value={formData.phoneNumber}
           onChange={handleChange}
-          required
         />
         <input
           type="password"

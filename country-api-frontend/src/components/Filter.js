@@ -5,10 +5,14 @@ function Filter({ onFilter }) {
 
   const handleFilter = (e) => {
     const region = e.target.value;
-    fetch(`https://restcountries.com/v3.1/region/${region}`)
+    if (region === "") {
+      alert('Please select a valid region to filter by.');
+    }else{
+      fetch(`https://restcountries.com/v3.1/region/${region}`)
       .then((response) => response.json())
       .then((data) => onFilter(data))
       .catch((error) => console.error('Error filtering:', error));
+    }
   };
 
   return (
