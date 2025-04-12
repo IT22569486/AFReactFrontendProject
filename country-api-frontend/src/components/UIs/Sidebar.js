@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import {BsCart3, BsGrid1X2Fill, BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, 
-  BsListCheck, BsMenuButtonWideFill, BsFillGearFill}
+  BsListCheck, BsMenuButtonWideFill, BsFillGearFill,BsPersonCircle}
 from 'react-icons/bs'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { FaFlagUsa,FaRegistered  } from "react-icons/fa";
+import { RiLoginBoxFill } from "react-icons/ri";
 
 const API_BASE_URL = 'http://localhost:3000/api/auth';
 
@@ -55,7 +57,7 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive": ""}>
         <div className='sidebar-title'>
             <div className='sidebar-brand'>
-                <BsCart3  className='icon_header'/> Countries
+                <FaFlagUsa  className='icon_header'/> Countries
             </div>
             <span className='icon close_icon' onClick={OpenSidebar}>X</span>
         </div>
@@ -70,19 +72,24 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
             </li>
             <li className='sidebar-list-item'>
                 <a href="/profile">
-                    <BsListCheck className='icon'/> Profile
+                    <BsPersonCircle className='icon'/> Profile
                 </a>
+            </li>
+            <li className='sidebar-list-item'>
+                <button className="btn btn-primary" onClick={() => handleLogout()}>
+                  Logout
+                </button>
             </li>
         </>
     ):(<>
             <li className='sidebar-list-item'>
                 <a href="/register">
-                    <BsMenuButtonWideFill className='icon'/> Register
+                    <FaRegistered  className='icon'/> Register
                 </a>
             </li>
             <li className='sidebar-list-item'>
                 <a href="/login">
-                    <BsFillGearFill className='icon'/> Login
+                    <RiLoginBoxFill className='icon'/> Login
                 </a>
             </li> 
             </>
