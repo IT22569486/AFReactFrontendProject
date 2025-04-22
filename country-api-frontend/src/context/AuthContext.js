@@ -11,7 +11,6 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Axios interceptor for 401 errors
   useEffect(() => {
     const interceptor = axios.interceptors.response.use(
       (response) => response,
@@ -24,11 +23,9 @@ const AuthProvider = ({ children }) => {
         return Promise.reject(error);
       }
     );
-
     return () => axios.interceptors.response.eject(interceptor);
   }, [navigate]);
 
-  // Check for existing session on mount
   useEffect(() => {
     const initializeAuth = async () => {
       const token = localStorage.getItem('token');
@@ -39,7 +36,7 @@ const AuthProvider = ({ children }) => {
           });
           setUser(response.data);
         } catch (err) {
-          console.error('Auth initialization error:', err);
+          console.error('Auth initialization error:', err.response?.data);
           localStorage.removeItem('token');
           setUser(null);
         }
@@ -49,35 +46,42 @@ const AuthProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
-  // Login function
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
+      console.log('Sending login request:', { email, password }); 
+      const response = await axios.post(
+        `${API_BASE_URL}/login`,
+        { email, password },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      console.log('Login response:', response.data); 
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       setUser(user);
       navigate('/');
     } catch (err) {
-      throw err.response?.data.message || 'Login failed';
+      console.error('Login error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      });
+      throw err; 
     }
   };
 
-  // Logout function
   const logout = async () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
         `${API_BASE_URL}/logout`,
         {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       localStorage.removeItem('token');
       setUser(null);
       navigate('/login');
     } catch (err) {
-      console.error('Logout error:', err);
+      console.error('Logout error:', err.response?.data);
       localStorage.removeItem('token');
       setUser(null);
       navigate('/login');

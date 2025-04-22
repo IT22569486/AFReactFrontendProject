@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import CountryList from './components/CountryList';
@@ -11,13 +11,14 @@ import Login from './components/Login';
 import Profile from './components/Profile';
 import Register from './components/Register';
 import EditUser from './components/EditUser';
+import Home from './components/Home';
 import './Home.css';
 
 function App() {
-  const [countries, setCountries] = React.useState([]);
-  const [openSidebarToggle, setOpenSidebarToggle] = React.useState(false);
+  const [countries, setCountries] = useState([]);
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetch('https://restcountries.com/v3.1/all')
       .then((response) => response.json())
       .then((data) => setCountries(data));
@@ -25,32 +26,36 @@ function App() {
 
   const handleSearch = (data) => setCountries(data);
   const handleFilter = (data) => setCountries(data);
-
-  const OpenSidebar = () => {
-    setOpenSidebarToggle(!openSidebarToggle);
-  };
+  const OpenSidebar = () => setOpenSidebarToggle(!openSidebarToggle);
 
   return (
     <Router>
       <AuthProvider>
-        <div className="container">
-          <h1 className="text-center my-4">REST Countries Explorer</h1>
-          <div className="mb-3">
-            <div className="grid-container">
-              <Header />
+        <div className="container-fluid bg-light min-vh-100 p-0">
+          <div className="row g-0">
+            <div className={`col-md-3 col-lg-2 bg-white border-end ${openSidebarToggle ? '' : 'd-none d-md-block'}`}>
               <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar} />
-              <div className="main-container">
-                <SearchBar onSearch={handleSearch} />
-                <Filter onFilter={handleFilter} />
-                <Routes>
-                  <Route path="/" element={<CountryList countries={countries} />} />
-                  <Route path="/country/:code" element={<CountryDetails />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/profile" element={<PrivateRoute component={Profile} />} />
-                  <Route path="/edit-user/:id" element={<PrivateRoute component={EditUser} />} />
-                </Routes>
+            </div>
+            <div className="col-md-9 col-lg-10 px-4 py-3">
+            <Header OpenSidebar={OpenSidebar} />
+              <h2 className="text-center text-primary mb-4">Countries Explorer</h2>
+              <div className="row mb-4">
+                <div className="col-md-6 mb-2">
+                  <SearchBar onSearch={handleSearch} />
+                </div>
+                <div className="col-md-6">
+                  <Filter onFilter={handleFilter} />
+                </div>
               </div>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/countries" element={<CountryList countries={countries} />} />
+                <Route path="/country/:code" element={<CountryDetails />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/profile" element={<PrivateRoute component={Profile} />} />
+                <Route path="/edit-user/:id" element={<PrivateRoute component={EditUser} />} />
+              </Routes>
             </div>
           </div>
         </div>
@@ -59,12 +64,17 @@ function App() {
   );
 }
 
-// PrivateRoute component to protect routes
 function PrivateRoute({ component: Component }) {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   return user ? <Component /> : <Navigate to="/login" />;

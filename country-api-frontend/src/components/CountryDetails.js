@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 function CountryDetails() {
   const { code } = useParams();
   const [country, setCountry] = useState(null);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     fetch(`https://restcountries.com/v3.1/alpha/${code}`)
@@ -11,17 +13,25 @@ function CountryDetails() {
       .then((data) => setCountry(data[0]));
   }, [code]);
 
-  if (!country) return <p>Loading...</p>;
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!country) return <div className="text-center mt-5">Loading...</div>;
 
   return (
-    <div className="card">
-      <img src={country.flags.png} alt={`${country.name.common} flag`} className="card-img-top" />
-      <div className="card-body">
-        <h5>{country.name.common}</h5>
-        <p>Capital: {country.capital?.[0] || 'N/A'}</p>
-        <p>Population: {country.population.toLocaleString()}</p>
-        <p>Region: {country.region}</p>
-        <p>Languages: {Object.values(country.languages).join(', ')}</p>
+    <div className="container mt-5 d-flex justify-content-center">
+      <div className="card shadow" style={{ width: '24rem' }}>
+        <img src={country.flags.png} alt={`${country.name.common} flag`} className="card-img-top" />
+        <div className="card-body">
+          <h5 className="card-title text-primary">{country.name.common}</h5>
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item"><strong>Capital:</strong> {country.capital?.[0] || 'N/A'}</li>
+            <li className="list-group-item"><strong>Population:</strong> {country.population.toLocaleString()}</li>
+            <li className="list-group-item"><strong>Region:</strong> {country.region}</li>
+            <li className="list-group-item"><strong>Languages:</strong> {Object.values(country.languages).join(', ')}</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
