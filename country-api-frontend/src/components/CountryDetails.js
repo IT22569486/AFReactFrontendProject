@@ -9,8 +9,17 @@ function CountryDetails() {
 
   useEffect(() => {
     fetch(`https://restcountries.com/v3.1/alpha/${code}`)
-      .then((response) => response.json())
-      .then((data) => setCountry(data[0]));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch country data');
+        }
+        return response.json();
+      })
+      .then((data) => setCountry(data[0]))
+      .catch((error) => {
+        console.error('Error fetching country data:', error);
+        // Keep country as null to stay in loading state
+      });
   }, [code]);
 
   if (!user) {

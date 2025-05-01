@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import CountryList from './components/CountryList';
 import CountryDetails from './components/CountryDetails';
-import SearchBar from './components/SearchBar';
-import Filter from './components/Filter';
 import Sidebar from './components/UIs/Sidebar';
 import Header from './components/UIs/Header';
 import Login from './components/Login';
@@ -15,17 +13,8 @@ import Home from './components/Home';
 import './Home.css';
 
 function App() {
-  const [countries, setCountries] = useState([]);
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
 
-  useEffect(() => {
-    fetch('https://restcountries.com/v3.1/all')
-      .then((response) => response.json())
-      .then((data) => setCountries(data));
-  }, []);
-
-  const handleSearch = (data) => setCountries(data);
-  const handleFilter = (data) => setCountries(data);
   const OpenSidebar = () => setOpenSidebarToggle(!openSidebarToggle);
 
   return (
@@ -39,17 +28,9 @@ function App() {
             <div className="col-md-9 col-lg-10 px-4 py-3">
             <Header OpenSidebar={OpenSidebar} />
               <h2 className="text-center text-primary mb-4">Countries Explorer</h2>
-              <div className="row mb-4">
-                <div className="col-md-6 mb-2">
-                  <SearchBar onSearch={handleSearch} />
-                </div>
-                <div className="col-md-6">
-                  <Filter onFilter={handleFilter} />
-                </div>
-              </div>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/countries" element={<CountryList countries={countries} />} />
+                <Route path="/countries" element={<CountryList  />} />
                 <Route path="/country/:code" element={<CountryDetails />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />

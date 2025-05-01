@@ -4,7 +4,7 @@ function SearchBar({ onSearch }) {
   const handleSearch = (e) => {
     const query = e.target.value;
     if (query.length > 2) {
-      fetch(`https://restcountries.com/v3.1/name/${query}`)
+      fetch(`https://restcountries.eu/rest/v2/name/${query}`)
         .then((response) => response.json())
         .then((data) => onSearch(data))
         .catch((error) => console.error('Error searching:', error));

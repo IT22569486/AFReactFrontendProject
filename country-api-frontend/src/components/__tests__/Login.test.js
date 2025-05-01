@@ -1,56 +1,71 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 import Login from '../Login';
+import { AuthContext } from '../../context/AuthContext';
 
-// Mock axios
-jest.mock('axios');
+// Mock login function
+const mockLogin = jest.fn();
 
-// Mock only MemoryRouter and useNavigate from react-router-dom
-jest.mock('react-router-dom', () => ({
-  MemoryRouter: ({ children }) => children,
-  useNavigate: () => jest.fn(),
-}));
+const renderWithAuthContext = () => {
+  return render(
+    <AuthContext.Provider value={{ login: mockLogin }}>
+      <Login />
+    </AuthContext.Provider>
+  );
+};
 
 describe('Login Component', () => {
-  const mockLogin = jest.fn();
-
-  const renderLogin = () => {
-    return render(
-      <AuthContext.Provider value={{ login: mockLogin }}>
-        <MemoryRouter>
-          <Login />
-        </MemoryRouter>
-      </AuthContext.Provider>
-    );
-  };
-
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockLogin.mockReset();
   });
 
-  test('successfully logs in with valid credentials', async () => {
-    // Mock successful login response
-    mockLogin.mockResolvedValueOnce({});
+  test('renders login form fields and button', () => {
+    renderWithAuthContext();
 
-    renderLogin();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
+  });
 
-    // Fill in the form
-    fireEvent.change(screen.getByPlaceholderText('Email'), {
+  test('calls login function on form submission', async () => {
+    mockLogin.mockResolvedValueOnce(); // simulate successful login
+
+    renderWithAuthContext();
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
+    fireEvent.change(screen.getByLabelText(/password/i), {
       target: { value: 'password123' },
     });
 
-    // Submit the form
-    fireEvent.click(screen.getByText('Login'));
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
-    // Wait for the login to process
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith('test@example.com', 'password123');
-      expect(screen.getByText('Login successful!')).toBeInTheDocument();
+      expect(screen.getByText(/login successful/i)).toBeInTheDocument();
+    });
+  });
+
+  test('displays error message on login failure', async () => {
+    mockLogin.mockRejectedValueOnce({
+      response: { data: { message: 'Invalid credentials' } },
+    });
+
+    renderWithAuthContext();
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'wrong@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'wrongpass' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
+
+    await waitFor(() => {
+      expect(mockLogin).toHaveBeenCalledWith('wrong@example.com', 'wrongpass');
+      expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
     });
   });
 });

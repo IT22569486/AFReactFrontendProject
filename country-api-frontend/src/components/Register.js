@@ -12,6 +12,7 @@ function Register() {
     email: '',
     phoneNumber: '',
     password: '',
+    confirmPassword: '', 
   });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
@@ -32,58 +33,112 @@ function Register() {
   };
 
   return (
-    <div className="auth-form">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="firstName"
-          placeholder="First Name"
-          value={formData.firstName}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Last Name"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Register</button>
-      </form>
-      <p>{message}</p>
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+    <div className="card p-4 shadow-sm" style={{ maxWidth: '500px', width: '100%' }}>
+      <h2 className="text-center mb-4">User Profile</h2>
+      <div>
+        <div className="row">
+          <div className="col-md-6 mb-3">
+            <label htmlFor="firstName" className="form-label">First Name</label>
+            <input
+              type="text"
+              className="form-control"
+              id="firstName"
+              name="firstName"
+              placeholder="Enter first name"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="col-md-6 mb-3">
+            <label htmlFor="lastName" className="form-label">Last Name</label>
+            <input
+              type="text"
+              className="form-control"
+              id="lastName"
+              name="lastName"
+              placeholder="Enter last name"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="username" className="form-label">Username *</label>
+          <input
+            type="text"
+            className="form-control"
+            id="username"
+            name="username"
+            placeholder="Enter username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">Email *</label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            placeholder="Enter email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="phoneNumber" className="form-label">Phone Number</label>
+          <input
+            type="tel"
+            className="form-control"
+            id="phoneNumber"
+            name="phoneNumber"
+            placeholder="Enter phone number"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">New Password (optional)</label>
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            name="password"
+            placeholder="Enter new password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="confirmPassword" className="form-label">Confirm New Password</label>
+          <input
+            type="password"
+            className="form-control"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm new password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+        </div>
+        <button
+          className="btn btn-primary w-100"
+          onClick={handleSubmit}
+          disabled={!formData.username || !formData.email}
+        >          Create Profile
+        </button>
+      </div>
+      {message && (
+        <div className={`alert mt-3 ${message.includes('successfully') ? 'alert-success' : 'alert-danger'}`} role="alert">
+          {message}
+        </div>
+      )}
     </div>
+  </div>
   );
 }
 

@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function CountryList({ countries }) {
+function CountryList() {
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    fetch('https://restcountries.com/v3.1/all')
+      .then((response) => response.json())
+      .then((data) => setCountries(data))
+      .catch((error) => console.error('Error fetching countries:', error));
+  }, []);
+
   return (
     <div className="row">
       {countries.map((country) => (
