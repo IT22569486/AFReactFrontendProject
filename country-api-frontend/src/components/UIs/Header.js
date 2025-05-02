@@ -30,8 +30,6 @@ function Header({ OpenSidebar }) {
     }
   }, []);
 
-  const handleSearch = (data) => setCountries(data);
-  const handleFilter = (data) => setCountries(data);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4 py-2">
@@ -39,10 +37,6 @@ function Header({ OpenSidebar }) {
         <button className="btn btn-outline-secondary me-3" onClick={OpenSidebar}>
           <BsJustify size={20} />
         </button>
-        <div className="d-flex align-items-center">
-          <BsSearch className="me-2 text-muted" />
-          <SearchBar onSearch={handleSearch} />
-        </div>
       </div>
 
       <div className="ms-auto d-flex align-items-center">

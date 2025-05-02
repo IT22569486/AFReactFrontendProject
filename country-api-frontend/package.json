@@ -45,24 +45,20 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "babel-jest": "^29.7.0",
+    "cypress": "^14.3.2",
+    "cypress-mochawesome-reporter": "^3.8.2",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-mock-axios": "^4.8.0",
     "util": "^0.12.5"
   },
-  
-  
-  
-    "jest": {
-      "moduleNameMapper": {
-        "\\.(css|less|scss|sass)$": "identity-obj-proxy"
-      },
-      "transformIgnorePatterns": [
-        "/node_modules/(?!axios)/"
-      ]
-    }
-  
-  
-  
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!axios)/"
+    ]
+  }
 }

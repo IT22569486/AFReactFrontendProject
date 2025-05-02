@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SearchBar from '../components/SearchBar';
+import Filter from '../components/Filter';
 
 function CountryList() {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    fetch('https://restcountries.com/v3.1/all')
+    fetch('https://restcountries.com/v2/all')
       .then((response) => response.json())
       .then((data) => setCountries(data))
       .catch((error) => console.error('Error fetching countries:', error));
   }, []);
 
+  const handleSearch = (data) => setCountries(data);
+  const handleFilter = (data) => setCountries(data);
   return (
     <div className="row">
+            <SearchBar onSearch={handleSearch} />
+            <Filter onFilter={handleFilter} />
       {countries.map((country) => (
         <div key={country.cca3} className="col-md-4 mb-3">
           <div className="card">

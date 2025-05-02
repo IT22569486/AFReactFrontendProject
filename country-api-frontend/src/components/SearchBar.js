@@ -2,10 +2,15 @@ import React from 'react';
 
 function SearchBar({ onSearch }) {
   const handleSearch = (e) => {
-    const query = e.target.value;
+    const query = e.target.value.trim();
     if (query.length > 2) {
-      fetch(`https://restcountries.eu/rest/v2/name/${query}`)
-        .then((response) => response.json())
+      fetch(`https://restcountries.com/v3.1/name/${query}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then((data) => onSearch(data))
         .catch((error) => console.error('Error searching:', error));
     }
