@@ -33,16 +33,16 @@ describe('Login Component', () => {
     renderWithAuthContext();
 
     fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'test@example.com' },
+      target: { value: 'rrr@gmail.com' },
     });
     fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: 'password123' },
+      target: { value: '12345678' },
     });
 
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith('test@example.com', 'password123');
+      expect(mockLogin).toHaveBeenCalledWith('rrr@gmail.com', '12345678');
       expect(screen.getByText(/login successful/i)).toBeInTheDocument();
     });
   });
